@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StyleHub - Inventory Management</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/quagga@0.12.1/dist/quagga.min.js"></script>
+    <style>
+        :root {
+            --primary: #6c5ce7;
+            --primary-dark: #5649c0;
+            --secondary: #fd79a8;
+            --dark: #1e1e2e;
+            --dark-light: #2d2d44;
+            --text: #e4e4e6;
+            --text-muted: #a0a0a8;
+            --success: #00b894;
+            --warning: #fdcb6e;
+            --danger: #e84393;
+            --border-radius: 8px;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--dark);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header & Navigation */
+        header {
+            background-color: var(--dark-light);
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .logo i {
+            font-size: 1.8rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 25px;
+        }
+
+        .nav-links a {
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            padding: 8px 12px;
+            border-radius: var(--border-radius);
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .hamburger {
+            display: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* Search Bar */
+        .search-container {
+            margin: 30px 0;
+            position: relative;
+        }
+
+        .search-bar {
+            width: 100%;
+            padding: 15px 20px;
+            border-radius: var(--border-radius);
+            border: none;
+            background-color: var(--dark-light);
+            color: var(--text);
+            font-size: 1rem;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .search-bar:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px var(--primary);
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+        }
+
+        /* Main Content */
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Scanner Section */
+        .scanner-section {
+            background-color: var(--dark-light);
+            border-radius: var(--border-radius);
+            padding: 25px;
+            box-shadow: var(--shadow);
+        }
+
+        .section-title {
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .camera-container {
+            position: relative;
+            width: 100%;
+            height: 300px;
+            background-color: #000;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        #camera-feed {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .scanner-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .scanner-line {
+            width: 80%;
+            height: 2px;
+            background-color: var(--primary);
+            box-shadow: 0 0 10px var(--primary);
+            animation: scan 2s infinite linear;
+        }
+
+        @keyframes scan {
+            0% { transform: translateY(-100px); }
+            100% { transform: translateY(100px); }
+        }
+
+        .scanner-controls {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: var(--border-radius);
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .btn-secondary {
+            background-color: var(--dark);
+            color: var(--text);
+            border: 1px solid var(--text-muted);
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--dark-light);
+        }
+
+        /* Barcode Results */
+        .barcode-results {
+            background-color: var(--dark-light);
+            border-radius: var(--border-radius);
+            padding: 25px;
+            box-shadow: var(--shadow);
+        }
+
+        .barcode-display {
+            background-color: var(--dark);
+            padding: 20px;
+            border-radius: var(--border-radius);
+            margin-bottom: 20px;
+        }
+
+        .barcode-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-align: center;
+            margin-bottom: 10px;
+            word-break: break-all;
+        }
+
+        .barcode-formats {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .format-tag {
+            background-color: var(--primary);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+        }
+
+        /* Product Info */
+        .product-info {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 200px;
+            background-color: var(--dark);
+            border-radius: var(--border-radius);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 15px;
+            overflow: hidden;
+        }
+
+        .product-image img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .product-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .detail-item {
+            margin-bottom: 10px;
+        }
+
+        .detail-label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 5px;
+        }
+
+        .detail-value {
+            font-weight: 500;
+        }
+
+        /* Inventory Table */
+        .inventory-section {
+            background-color: var(--dark-light);
+            border-radius: var(--border-radius);
+            padding: 25px;
+            box-shadow: var(--shadow);
+            margin-bottom: 40px;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        th {
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        tr:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .status {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .status-in-stock {
+            background-color: rgba(0, 184, 148, 0.2);
+            color: var(--success);
+        }
+
+        .status-low {
+            background-color: rgba(253, 203, 110, 0.2);
+            color: var(--warning);
+        }
+
+        .status-out {
+            background-color: rgba(232, 67, 147, 0.2);
+            color: var(--danger);
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--dark-light);
+            padding: 30px 0;
+            margin-top: 40px;
+            text-align: center;
+            color: var(--text-muted);
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .footer-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .footer-links a:hover {
+            color: var(--primary);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .nav-links {
+                display: none;
+            }
+
+            .hamburger {
+                display: block;
+            }
+
+            .footer-content {
+                flex-direction: column;
+                gap: 20px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .scanner-controls {
+                flex-direction: column;
+            }
+
+            .btn {
+                justify-content: center;
+            }
+
+            .product-details {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header & Navigation -->
+    <header>
+        <div class="container">
+            <nav class="navbar">
+                <div class="logo">
+                    <i class="fas fa-tshirt"></i>
+                    <span>StyleHub</span>
+                </div>
+                <div class="nav-links">
+                    <a href="#" class="active"><i class="fas fa-home"></i> Dashboard</a>
+                    <a href="#"><i class="fas fa-boxes"></i> Inventory</a>
+                    <a href="#"><i class="fas fa-shopping-cart"></i> Sales</a>
+                    <a href="#"><i class="fas fa-chart-bar"></i> Reports</a>
+                    <a href="#"><i class="fas fa-cog"></i> Settings</a>
+                </div>
+                <div class="hamburger">
+                    <i class="fas fa-bars"></i>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Search Bar -->
+        <div class="search-container">
+            <input type="text" class="search-bar" placeholder="Search products, brands, categories...">
+            <i class="fas fa-search search-icon"></i>
+        </div>
+
+        <!-- Scanner and Results Section -->
+        <div class="main-content">
+            <!-- Scanner Section -->
+            <section class="scanner-section">
+                <h2 class="section-title">
+                    <i class="fas fa-barcode"></i>
+                    Barcode Scanner
+                </h2>
+                <div class="camera-container">
+                    <video id="camera-feed"></video>
+                    <div class="scanner-overlay">
+                        <div class="scanner-line"></div>
+                    </div>
+                </div>
+                <div class="scanner-controls">
+                    <button class="btn btn-primary" id="start-scanner">
+                        <i class="fas fa-camera"></i>
+                        Start Scanner
+                    </button>
+                    <button class="btn btn-secondary" id="stop-scanner" disabled>
+                        <i class="fas fa-stop"></i>
+                        Stop Scanner
+                    </button>
+                    <button class="btn btn-secondary" id="manual-entry">
+                        <i class="fas fa-keyboard"></i>
+                        Manual Entry
+                    </button>
+                </div>
+            </section>
+
+            <!-- Barcode Results -->
+            <section class="barcode-results">
+                <h2 class="section-title">
+                    <i class="fas fa-search"></i>
+                    Scanned Product
+                </h2>
+                <div class="barcode-display">
+                    <div class="barcode-value" id="barcode-value">No barcode scanned</div>
+                    <div class="barcode-formats" id="barcode-formats">
+                        <!-- Format tags will be added here dynamically -->
+                    </div>
+                </div>
+
+                <!-- Product Information -->
+                <div class="product-info">
+                    <div class="product-image">
+                        <img id="product-image" src="" alt="Product Image" style="display: none;">
+                        <i class="fas fa-tshirt" style="font-size: 4rem; color: var(--text-muted);" id="product-placeholder"></i>
+                    </div>
+                    <div class="product-details">
+                        <div class="detail-item">
+                            <div class="detail-label">Product Name</div>
+                            <div class="detail-value" id="product-name">-</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Brand</div>
+                            <div class="detail-value" id="product-brand">-</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Category</div>
+                            <div class="detail-value" id="product-category">-</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Size</div>
+                            <div class="detail-value" id="product-size">-</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Color</div>
+                            <div class="detail-value" id="product-color">-</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Price</div>
+                            <div class="detail-value" id="product-price">-</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Stock</div>
+                            <div class="detail-value" id="product-stock">-</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Status</div>
+                            <div class="detail-value">
+                                <span class="status" id="product-status">-</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Inventory Table -->
+        <section class="inventory-section">
+            <h2 class="section-title">
+                <i class="fas fa-boxes"></i>
+                Recent Inventory
+            </h2>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Product ID</th>
+                            <th>Product Name</th>
+                            <th>Category</th>
+                            <th>Size</th>
+                            <th>Color</th>
+                            <th>Price</th>
+                            <th>Stock</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="inventory-table-body">
+                        <!-- Table rows will be populated by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="copyright">
+                    &copy; 2023 StyleHub Inventory Management System
+                </div>
+                <div class="footer-links">
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                    <a href="#">Support</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Sample product data
+        const products = {
+            "123456789012": {
+                name: "Classic Cotton T-Shirt",
+                brand: "FashionBase",
+                category: "Tops",
+                size: "M",
+                color: "White",
+                price: "$24.99",
+                stock: 45,
+                status: "in-stock",
+                image: "https://via.placeholder.com/300x300/6c5ce7/ffffff?text=T-Shirt"
+            },
+            "234567890123": {
+                name: "Slim Fit Jeans",
+                brand: "DenimCo",
+                category: "Bottoms",
+                size: "32",
+                color: "Dark Blue",
+                price: "$59.99",
+                stock: 12,
+                status: "low",
+                image: "https://via.placeholder.com/300x300/6c5ce7/ffffff?text=Jeans"
+            },
+            "345678901234": {
+                name: "Winter Jacket",
+                brand: "OutdoorGear",
+                category: "Outerwear",
+                size: "L",
+                color: "Black",
+                price: "$129.99",
+                stock: 0,
+                status: "out",
+                image: "https://via.placeholder.com/300x300/6c5ce7/ffffff?text=Jacket"
+            },
+            "456789012345": {
+                name: "Sports Hoodie",
+                brand: "ActiveWear",
+                category: "Tops",
+                size: "XL",
+                color: "Gray",
+                price: "$49.99",
+                stock: 28,
+                status: "in-stock",
+                image: "https://via.placeholder.com/300x300/6c5ce7/ffffff?text=Hoodie"
+            },
+            "567890123456": {
+                name: "Summer Dress",
+                brand: "Elegance",
+                category: "Dresses",
+                size: "S",
+                color: "Floral",
+                price: "$79.99",
+                stock: 7,
+                status: "low",
+                image: "https://via.placeholder.com/300x300/6c5ce7/ffffff?text=Dress"
+            }
+        };
+
+        // DOM Elements
+        const cameraFeed = document.getElementById('camera-feed');
+        const startScannerBtn = document.getElementById('start-scanner');
+        const stopScannerBtn = document.getElementById('stop-scanner');
+        const manualEntryBtn = document.getElementById('manual-entry');
+        const barcodeValue = document.getElementById('barcode-value');
+        const barcodeFormats = document.getElementById('barcode-formats');
+        const productImage = document.getElementById('product-image');
+        const productPlaceholder = document.getElementById('product-placeholder');
+        const productName = document.getElementById('product-name');
+        const productBrand = document.getElementById('product-brand');
+        const productCategory = document.getElementById('product-category');
+        const productSize = document.getElementById('product-size');
+        const productColor = document.getElementById('product-color');
+        const productPrice = document.getElementById('product-price');
+        const productStock = document.getElementById('product-stock');
+        const productStatus = document.getElementById('product-status');
+        const inventoryTableBody = document.getElementById('inventory-table-body');
+
+        // Scanner state
+        let scannerActive = false;
+        let stream = null;
+
+        // Initialize the inventory table
+        function initializeInventoryTable() {
+            inventoryTableBody.innerHTML = '';
+            
+            Object.entries(products).forEach(([barcode, product]) => {
+                const row = document.createElement('tr');
+                
+                // Determine status class and text
+                let statusClass = '';
+                let statusText = '';
+                
+                if (product.status === 'in-stock') {
+                    statusClass = 'status-in-stock';
+                    statusText = 'In Stock';
+                } else if (product.status === 'low') {
+                    statusClass = 'status-low';
+                    statusText = 'Low Stock';
+                } else {
+                    statusClass = 'status-out';
+                    statusText = 'Out of Stock';
+                }
+                
+                row.innerHTML = `
+                    <td>${barcode}</td>
+                    <td>${product.name}</td>
+                    <td>${product.category}</td>
+                    <td>${product.size}</td>
+                    <td>${product.color}</td>
+                    <td>${product.price}</td>
+                    <td>${product.stock}</td>
+                    <td><span class="status ${statusClass}">${statusText}</span></td>
+                `;
+                
+                inventoryTableBody.appendChild(row);
+            });
+        }
+
+        // Start the barcode scanner
+        async function startScanner() {
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { 
+                        facingMode: 'environment',
+                        width: { ideal: 1280 },
+                        height: { ideal: 720 }
+                    } 
+                });
+                
+                cameraFeed.srcObject = stream;
+                scannerActive = true;
+                
+                startScannerBtn.disabled = true;
+                stopScannerBtn.disabled = false;
+                
+                // Simulate barcode detection for demo purposes
+                // In a real application, you would use a library like Quagga.js
+                simulateBarcodeDetection();
+                
+            } catch (error) {
+                console.error('Error accessing camera:', error);
+                alert('Unable to access camera. Please check permissions and try again.');
+            }
+        }
+
+        // Stop the barcode scanner
+        function stopScanner() {
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+                stream = null;
+            }
+            
+            cameraFeed.srcObject = null;
+            scannerActive = false;
+            
+            startScannerBtn.disabled = false;
+            stopScannerBtn.disabled = true;
+        }
+
+        // Simulate barcode detection for demo
+        function simulateBarcodeDetection() {
+            if (!scannerActive) return;
+            
+            // Randomly select a barcode from our products
+            const barcodes = Object.keys(products);
+            const randomBarcode = barcodes[Math.floor(Math.random() * barcodes.length)];
+            
+            // Simulate scanning after a random delay (1-3 seconds)
+            setTimeout(() => {
+                if (scannerActive) {
+                    processBarcode(randomBarcode);
+                    
+                    // Continue scanning
+                    simulateBarcodeDetection();
+                }
+            }, 1000 + Math.random() * 2000);
+        }
+
+        // Process the scanned barcode
+        function processBarcode(code) {
+            // Display the barcode value
+            barcodeValue.textContent = code;
+            
+            // Generate different format representations
+            const formats = [
+                { name: 'UPC-A', value: code },
+                { name: 'EAN-13', value: code },
+                { name: 'Code 128', value: `{${code}}` },
+                { name: 'Code 39', value: `*${code}*` }
+            ];
+            
+            // Display format tags
+            barcodeFormats.innerHTML = '';
+            formats.forEach(format => {
+                const tag = document.createElement('span');
+                tag.className = 'format-tag';
+                tag.textContent = `${format.name}: ${format.value}`;
+                barcodeFormats.appendChild(tag);
+            });
+            
+            // Look up product information
+            if (products[code]) {
+                const product = products[code];
+                
+                // Update product details
+                productName.textContent = product.name;
+                productBrand.textContent = product.brand;
+                productCategory.textContent = product.category;
+                productSize.textContent = product.size;
+                productColor.textContent = product.color;
+                productPrice.textContent = product.price;
+                productStock.textContent = product.stock;
+                
+                // Update status with appropriate class
+                productStatus.textContent = 
+                    product.status === 'in-stock' ? 'In Stock' : 
+                    product.status === 'low' ? 'Low Stock' : 'Out of Stock';
+                
+                productStatus.className = `status status-${product.status}`;
+                
+                // Update product image
+                productImage.src = product.image;
+                productImage.style.display = 'block';
+                productPlaceholder.style.display = 'none';
+            } else {
+                // Product not found
+                productName.textContent = 'Product Not Found';
+                productBrand.textContent = '-';
+                productCategory.textContent = '-';
+                productSize.textContent = '-';
+                productColor.textContent = '-';
+                productPrice.textContent = '-';
+                productStock.textContent = '-';
+                productStatus.textContent = 'Unknown';
+                productStatus.className = 'status';
+                
+                // Hide product image
+                productImage.style.display = 'none';
+                productPlaceholder.style.display = 'block';
+            }
+        }
+
+        // Manual barcode entry
+        function manualEntry() {
+            const code = prompt('Enter barcode manually:');
+            if (code) {
+                processBarcode(code);
+            }
+        }
+
+        // Event Listeners
+        startScannerBtn.addEventListener('click', startScanner);
+        stopScannerBtn.addEventListener('click', stopScanner);
+        manualEntryBtn.addEventListener('click', manualEntry);
+
+        // Initialize the page
+        initializeInventoryTable();
+
+        // Demo: Auto-scan a product after 2 seconds for demo purposes
+        setTimeout(() => {
+            processBarcode('123456789012');
+        }, 2000);
+    </script>
+</body>
+</html>
