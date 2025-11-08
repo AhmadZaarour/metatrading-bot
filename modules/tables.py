@@ -2,12 +2,21 @@ from . import db
 
 class Product(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    barcode = db.Column(db.String(50), unique=True, nullable=False)
     name = db.Column(db.String(100), nullable=False)
-    quantity = db.Column(db.Integer, default=0)
+    sku = db.Column(db.String(50), unique=True)
+    brand = db.Column(db.String(100))
+    category = db.Column(db.String(100))
+    size = db.Column(db.String(10))
+    color = db.Column(db.String(50))
+    stock = db.Column(db.Integer, default=0)
     price = db.Column(db.Float, nullable=False)
+    image_url = db.Column(db.String(200))
 
 class Sale(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    product_id = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=False)
+    barcode = db.Column(db.String(50), unique=True, nullable=False)
+    items = db.Column(db.String(200), nullable=False)
     quantity_sold = db.Column(db.Integer, nullable=False)
+    price = db.Column(db.Float, nullable=False)
     date = db.Column(db.DateTime, nullable=False)

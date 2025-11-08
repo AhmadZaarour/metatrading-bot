@@ -37,10 +37,25 @@ def add_product():
 @main.route('/sales', methods=['POST'])
 def record_sale():
     data = request.get_json()
+    code = data['barcode']
+    qty = data['quantity_sold']
+    date = data['date']
+    items = data['items']
+    price = data['cart_total']
+    item = Product.query.filter_by(barcode=code).first()
+    if not item:
+        return jsonify({"error": "Product not found!"}), 404
+    if item.stock < qty:
+        return jsonify({"error": "Insufficient stock!"}), 400
+    item.stock -= qty
+    
+    
     sale = Sale(
-        product_id=data['product_id'],
-        quantity_sold=data['quantity_sold'],
-        date=data['date']
+        barcode=item.barcode,
+        items=items,
+        price=price,
+        quantity_sold=qty,
+        date=date
     )
     db.session.add(sale)
     db.session.commit()
@@ -51,7 +66,7 @@ def record_sale():
 def get_sales():
     sales = Sale.query.all()
     result = [
-        {"id": s.id, "product_id": s.product_id, "quantity_sold": s.quantity_sold, "date": s.date}
+        {"id": s.id, "Date": s.date, "quantity_sold": s.quantity_sold,}
         for s in sales
     ]
     return jsonify(result)
